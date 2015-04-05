@@ -175,10 +175,22 @@ class NewGameState implements State {
 };
 
 class InGameState implements State {
-	Game g;
+	private Game g;
 
-	InGameState(Game g) {
+	public InGameState(Game g) {
 		this.g = g;
+	}
+
+	public void initializeButtons() {
+
+	}
+
+	public void draw() {
+
+	}
+
+	public void click(int x, int y) {
+
 	}
 };
 
