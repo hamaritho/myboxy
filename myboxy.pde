@@ -1,3 +1,6 @@
+/******************************************************************************
+ * Game States                                                                *
+ ******************************************************************************/
 interface State {
 	public void draw();
 	public void click(int x, int y);
@@ -5,54 +8,37 @@ interface State {
 }
 
 class TitleState implements State {
-	Game g;
-	Button[] buttons;
-	int bg = 255;
+	private Game g;
+	private Button[] buttons;
 
-	TitleState(Game g) {
+	public TitleState(Game g) {
 		this.g = g;
 		buttons = new Button[4];
-
-		buttons[0] = new Button("New Game", width/2, 150, 300, 50);
-		buttons[1] = new Button("Load Game", width/2, 250, 300, 50);
-		buttons[2] = new Button("How To Play", width/2, 350, 300, 50);
-		buttons[3] = new Button("Take Survey", width/2, 450, 300, 50);
 	}
 
-	void draw() {
-		background(bg);
-	  	String t = "My Boxy";
-	  	fill(0);
-	  	textFont(f, 77.7);
-	  	float tw = textWidth(t);
-	  	text(t, width/2, 50);
-
-	  	for(Button b : buttons) {
-	  		b.draw();
-	  	}
+	public void initializeButtons() {
+		buttons[0] = new MenuButton("New Game", width/2, 150, 300, 50, this.g.getNewGameState());
+		buttons[1] = new MenuButton("Load Game", width/2, 250, 300, 50, this.g.getInGameState());
+		buttons[2] = new MenuButton("How To Play", width/2, 350, 300, 50, this.g.getHowToPlayState());
+		buttons[3] = new MenuButton("Take Survey", width/2, 450, 300, 50, this.g.getSurveyState());
 	}
 
-	void click(int x, int y) {
-		for(int i = 0; i < 4; i++)
-		{
-			if (buttons[i].clicked())
-			{
-				switch(i) {
-					case 0:
-						g.setState(g.getNewGameState());
-						break;
-					case 1:
-						g.setState(g.getInGameState());
-						break;
-					case 2:
-						g.setState(g.getHowToPlayState());
-						break;
-					case 3:
-						g.setState(g.getSurveyState());
-						break;
-					default:
-						break;	
-				}
+	public void draw() {
+		background(255);
+		String t = "My Boxy";
+		fill(0);
+
+		writeText(t, width/2, 50, 77.7);
+
+		for(Button b : buttons) {
+			b.draw();
+		}
+	}
+
+	public void click(int x, int y) {
+		for(Button b : buttons) {
+			if (b.clicked(x, y)) {
+				g.setState(((MenuButton)b).getNextState());
 			}
 		}
 	}
