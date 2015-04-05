@@ -331,6 +331,23 @@ class Button {
 };
 
 /******************************************************************************
+ * Helper Functions                                                           *
+ ******************************************************************************/
+void writeText(String t, int x, int y, float fontsize) {
+	textFont(f, fontsize);
+	text(t, x, y);
+}
+
+void writeText(char[] t, int x, int y, float fontsize) {
+	textFont(f, fontsize);
+
+	for (char letter : t) {
+		text(letter, x, y);
+		x += 50;
+	}
+}
+
+/******************************************************************************
  * Running the Game                                                           *
  ******************************************************************************/
 PFont f;
