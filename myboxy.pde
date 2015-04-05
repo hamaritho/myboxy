@@ -234,54 +234,63 @@ class SurveyState implements State {
 	}
 };
 
+/******************************************************************************
+ * The Game                                                                   *
+ ******************************************************************************/
 class Game {
-	State titleState;
-	State newGameState;
-	State inGameState;
-	State howToPlayState;
-	State surveyState;
+	private State titleState;
+	private State newGameState;
+	private State inGameState;
+	private State howToPlayState;
+	private State surveyState;
 
-	State state;
+	private State state;
 
-	Game() {
+	public Game() {
 		titleState = new TitleState(this);
 		newGameState = new NewGameState(this);
 		inGameState = new InGameState(this);
 		howToPlayState = new HowToPlayState(this);
 		surveyState = new SurveyState(this);
 
+		titleState.initializeButtons();
+		newGameState.initializeButtons();
+		inGameState.initializeButtons();
+		howToPlayState.initializeButtons();
+		surveyState.initializeButtons();
+
 		state = titleState;
 	}
 
-	void draw() {
+	public void draw() {
 		state.draw();
 	}
 
-	void click(int x, int y) {
+	public void click(int x, int y) {
 		state.click(x, y);
 	}
 
-	State getTitleState() {
+	public State getTitleState() {
 		return titleState;
 	}
 
-	State getNewGameState() {
+	public State getNewGameState() {
 		return newGameState;
 	}
 
-	State getInGameState() {
+	public State getInGameState() {
 		return inGameState;
 	}
 
-	State getHowToPlayState() {
+	public State getHowToPlayState() {
 		return howToPlayState;
 	}
 
-	State getSurveyState() {
+	public State getSurveyState() {
 		return surveyState;
 	}
 
-	void setState(State s) {
+	public void setState(State s) {
 		state = s;
 	}
 };
