@@ -195,10 +195,22 @@ class InGameState implements State {
 };
 
 class HowToPlayState implements State {
-	Game g;
+	private Game g;
 
-	HowToPlayState(Game g) {
+	public HowToPlayState(Game g) {
 		this.g = g;
+	}
+
+	public void initializeButtons() {
+
+	}
+
+	public void draw() {
+
+	}
+
+	public void click(int x, int y) {
+
 	}
 };
 
