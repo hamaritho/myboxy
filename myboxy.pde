@@ -330,16 +330,18 @@ class Button {
 	}
 };
 
+/******************************************************************************
+ * Running the Game                                                           *
+ ******************************************************************************/
 PFont f;
 Game game;
 
 void setup() {
 	size(600,600);
-	f = createFont("Ubuntu Mono");
+	f = createFont("Ubuntu Mono", 77);
 	rectMode(CENTER);
 	textAlign(CENTER, CENTER);
 	game = new Game();
-	noLoop();
 }
 
 void draw() {
