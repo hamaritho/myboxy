@@ -295,6 +295,9 @@ class Game {
 	}
 };
 
+/******************************************************************************
+ * Button Class                                                               *
+ ******************************************************************************/
 class Button {
 	String t;
 	int x;
@@ -302,7 +305,7 @@ class Button {
 	int w;
 	int h;
 
-	Button(String t, int x, int y, int w, int h) {
+	public Button(String t, int x, int y, int w, int h) {
 		this.t = t;
 		this.x = x;
 		this.y = y;
@@ -310,16 +313,14 @@ class Button {
 		this.h = h;
 	}
 
-	void draw() {
+	public void draw() {
 		fill(255);
 		rect(x, y, w, h, 20);
 		fill(0);
-		textFont(f, 28.9);
-
-		text(t, x, y);
+		writeText(t, x, y, 28.9);
 	}
 
-	boolean clicked(int mx, int my) {
+	public boolean clicked(int mx, int my) {
 		int left = x - (w/2);
 		int right = x + (w/2);
 		int top = y - (h/2);
