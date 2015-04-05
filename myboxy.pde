@@ -1,6 +1,7 @@
 interface State {
-	void draw();
-	void click(int x, int y);
+	public void draw();
+	public void click(int x, int y);
+	public void initializeButtons();
 }
 
 class TitleState implements State {
