@@ -215,10 +215,22 @@ class HowToPlayState implements State {
 };
 
 class SurveyState implements State {
-	Game g;
+	private Game g;
 
-	SurveyState(Game g) {
+	public SurveyState(Game g) {
 		this.g = g;
+	}
+
+	public void initializeButtons() {
+
+	}
+
+	public void draw() {
+
+	}
+
+	public void click(int x, int y) {
+
 	}
 };
 
