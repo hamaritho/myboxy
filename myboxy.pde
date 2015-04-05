@@ -330,6 +330,51 @@ class Button {
 	}
 };
 
+class MenuButton extends Button {
+	
+	private State nextState;
+
+	public MenuButton(String t, int x, int y, int w, int h, State nextState) {
+		super(t, x, y, w, h);
+		this.nextState = nextState;
+	}
+
+	public State getNextState() {
+		return nextState;
+	}
+};
+
+class ColorButton extends Button {
+	private color c;
+
+	public ColorButton(int x, int y, int w, int h, color c) {
+		super("", x, y, w, h);
+		this.c = c;
+	}
+
+	public color getColor() {
+		return c;
+	}
+
+	public void draw() {
+		fill(c);
+		rect(x, y, w, h);
+	}
+};
+
+class Key extends Button {
+	private char letter;
+
+	public Key(String t, int x, int y, int w, int h, char letter) {
+		super(t, x, y, w, h);
+		this.letter = letter;
+	}
+
+	public char getLetter() {
+		return letter;
+	}
+};
+
 /******************************************************************************
  * Keyboard Class                                                             *
  ******************************************************************************/
