@@ -452,12 +452,15 @@ class Game {
 
 	private State state;
 
+	private Boxy boxy;
+
 	public Game() {
 		titleState = new TitleState(this);
 		newGameState = new NewGameState(this);
 		inGameState = new InGameState(this);
 		howToPlayState = new HowToPlayState(this);
 		surveyState = new SurveyState(this);
+		boxy = new Boxy();
 
 		titleState.initializeButtons();
 		newGameState.initializeButtons();
@@ -505,8 +508,9 @@ class Game {
 	public void setState(State s) {
 		state = s;
 	}
-};
 
+	public Boxy getBoxy() {
+		return boxy;
 	}
 };
 
