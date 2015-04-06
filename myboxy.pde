@@ -170,6 +170,9 @@ interface State {
 	public void initializeButtons();
 }
 
+/******************************************************************************
+ * Title State                                                                *
+ ******************************************************************************/
 class TitleState implements State {
 	private Game g;
 	private Button[] buttons;
@@ -207,6 +210,9 @@ class TitleState implements State {
 	}
 };
 
+/******************************************************************************
+ * New Game                                                                   *
+ ******************************************************************************/
 class NewGameState implements State {
 	private Game g;
 	private int screen = 0;
@@ -335,6 +341,9 @@ class NewGameState implements State {
 	}
 };
 
+/******************************************************************************
+ * In Game State                                                              *
+ ******************************************************************************/
 class InGameState implements State {
 	private Game g;
 
@@ -355,6 +364,9 @@ class InGameState implements State {
 	}
 };
 
+/******************************************************************************
+ * How To Play                                                                *
+ ******************************************************************************/
 class HowToPlayState implements State {
 	private Game g;
 
@@ -375,6 +387,9 @@ class HowToPlayState implements State {
 	}
 };
 
+/******************************************************************************
+ * Survey                                                                     *
+ ******************************************************************************/
 class SurveyState implements State {
 	private Game g;
 
