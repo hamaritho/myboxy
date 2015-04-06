@@ -356,20 +356,30 @@ class NewGameState implements State {
  ******************************************************************************/
 class InGameState implements State {
 	private Game g;
+	private Boxy b;
 
 	public InGameState(Game g) {
 		this.g = g;
 	}
 
 	public void initializeButtons() {
-
+		b = g.getBoxy();
 	}
 
 	public void draw() {
+		background(255);
+		fill(0);
+		writeText(b.getName(), width/2, 45, 77.7);
 
+		b.draw();
+
+		fill(200);
+		rect(width/2, 575, width, 50);
 	}
 
 	public void click(int x, int y) {
+		b.click(x, y);
+	}
 
 	public void drag(int x, int y) {
 		b.drag(x, y);
