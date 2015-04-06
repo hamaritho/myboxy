@@ -312,6 +312,7 @@ class NewGameState implements State {
 
 				if (submit.clicked(x, y)) {
 					if (chosenColor != color(255,255,255)) {
+						g.getBoxy().setColor(chosenColor);
 						screen += 1;
 					}
 				}
@@ -320,12 +321,11 @@ class NewGameState implements State {
 
 			case 1:
 				char k = keyboard.click(x, y);
-				print(k);
 				if (k == '.') {
 					currentIndex -= 1;
 					name[currentIndex] = '_';
 				}
-				else {
+				else if (k != '_') {
 					if (currentIndex < maxIndex) {
 						name[currentIndex] = k;
 						currentIndex += 1;
@@ -334,6 +334,7 @@ class NewGameState implements State {
 
 				if (submit.clicked(x, y)) {
 					if (name[0] != '_') {
+						g.getBoxy().setName(name);
 						g.setState(g.getInGameState());
 					}
 				}
