@@ -515,8 +515,142 @@ class Game {
 };
 
 /******************************************************************************
- * Keyboard Class                                                             *
+ * Boxy                                                                       *
  ******************************************************************************/
+class Boxy {
+	private int responsiveness;
+	private int closeness;
+	private int fullness;
+	private int happiness;
+	private color c;
+	private String name;
+	private int x;
+	private int y;
+
+	private final int MAX_RESPONSIVENESS = 10;
+	private final int MAX_CLOSENESS = 10;
+	private final int MAX_FULLNESS = 100;
+	private final int MAX_HAPPINESS = 100;
+	private final int LENGTH = 100;
+	private final int MAX_X = width-LENGTH;
+	private final int MAX_Y = height-LENGTH;
+
+	private int dragTime = 0;
+	private int sadTime = 0;
+	private int happyTime = 0;
+
+	public Boxy() {
+		responsiveness = int(random(MAX_RESPONSIVENESS));
+		closeness = int(random(MAX_CLOSENESS));
+		fullness = int(random(MAX_FULLNESS));
+		happiness = int(random(MAX_HAPPINESS));
+		name = "Boxy";
+		c = color(int(random(255)), int(random(255)), int(random(255)));
+		x = width/2;
+		y = MAX_Y;
+	}
+
+	public void draw() {
+		fill(c);
+		rect(x, y, LENGTH, LENGTH);
+
+		if (frameCount % 420 == 0) {
+			fullness -= 1;
+		}
+
+		if (fullness < MAX_FULLNESS/4) {
+			happiness = 0;
+		}
+
+		if (fullness < MAX_FULLNESS/2) {
+			happiness = MAX_HAPPINESS/2;
+		}
+
+		if (happiness < MAX_HAPPINESS/2) {
+			sadTime	+= 1;
+		}
+
+		if (happiness > MAX_HAPPINESS/2) {
+			happyTime += 1;
+		}
+
+		if (sadTime > 1000) {
+			sadTime = 0;
+			closeness -= 1;
+		}
+		if (happyTime > 1000) {
+			happyTime = 0;
+			closeness += 1;
+		}
+	}
+
+	public color getColor() {
+		return c;
+	}
+
+	public void setColor(color c) {
+		this.c = c;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(char[] letters) {
+		name = "";
+		for (char letter : letters) {
+			if (letter != '_') {
+				name += letter;
+			}
+		}
+	}
+
+	public void click(int mx, int my) {
+		int left = x - LENGTH;
+		int right = x + LENGTH;
+		int top = y - LENGTH;
+		int bottom = y + LENGTH;
+
+		if (mx >= left && mx <= right && my >= top && my <= bottom && happiness > 0) {
+			happiness -= 1;
+		}
+
+	}
+
+	public void drag(int mx, int my) {
+		int left = x - LENGTH;
+		int right = x + LENGTH;
+		int top = y - LENGTH;
+		int bottom = y + LENGTH;
+
+		if (mx >= left && mx <= right && my >= top && my <= bottom && happiness < MAX_HAPPINESS) {
+			dragTime += 1;
+
+			if (dragTime > 500) {
+				happiness += 1;
+				dragTime = 0;
+			}
+		}
+	}
+
+	public void feed() {
+		if (fullness < MAX_FULLNESS) {
+			fullness += 1;
+		}
+	}
+
+	public int getResponsiveness() {
+		return responsiveness;
+	}
+
+	public int getCloseness() {
+		return closeness;
+	}
+
+	public void setPosition(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
 };
 
 /******************************************************************************
