@@ -168,6 +168,7 @@ interface State {
 	public void draw();
 	public void click(int x, int y);
 	public void initializeButtons();
+	public void drag(int x, int y);
 }
 
 /******************************************************************************
@@ -207,6 +208,10 @@ class TitleState implements State {
 				g.setState(((MenuButton)b).getNextState());
 			}
 		}
+	}
+
+	public void drag(int x, int y) {
+		//Nothing to do.
 	}
 };
 
@@ -339,6 +344,10 @@ class NewGameState implements State {
 				break;
 		}
 	}
+
+	public void drag(int x, int y) {
+		//Nothing to do.
+	}
 };
 
 /******************************************************************************
@@ -361,6 +370,8 @@ class InGameState implements State {
 
 	public void click(int x, int y) {
 
+	public void drag(int x, int y) {
+		b.drag(x, y);
 	}
 };
 
@@ -385,6 +396,10 @@ class HowToPlayState implements State {
 	public void click(int x, int y) {
 
 	}
+
+	public void drag(int x, int y) {
+
+	}
 };
 
 /******************************************************************************
@@ -406,6 +421,10 @@ class SurveyState implements State {
 	}
 
 	public void click(int x, int y) {
+
+	}
+
+	public void drag(int x, int y) {
 
 	}
 };
@@ -444,6 +463,12 @@ class Game {
 
 	public void click(int x, int y) {
 		state.click(x, y);
+	}
+
+	public void drag(int x, int y) {
+		if (state == inGameState) {
+			state.drag(x, y);
+		}
 	}
 
 	public State getTitleState() {
@@ -501,3 +526,6 @@ void mouseClicked() {
 	game.click(mouseX, mouseY);
 }
 
+void mouseDragged() {
+	game.drag(mouseX, mouseY);
+}
