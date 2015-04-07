@@ -543,19 +543,15 @@ class Game {
  * FoodPellet                                                                 *
  ******************************************************************************/
  class FoodPellet {
- 	private int x;
  	private int y;
  	private int length = 5;
  	private int deg = 0;
 
- 	private final int MAX_Y = height;
-
  	public FoodPellet(int x, int y) {
- 		this.x = x;
  		this.y = y;
  	}
 
- 	public void draw() {
+ 	public void draw(int x) {
  		fill(139,69,19);
  		pushMatrix();
  		translate(x, y);
@@ -563,13 +559,13 @@ class Game {
  		rect(0, 0, length, length);
  		popMatrix();
 
- 		y += 1;
- 		deg += 1;
+ 		y += 3;
+ 		deg += 5;
  		deg %= 360;
  	}
 
- 	public boolean isEaten() {
- 		return y == MAX_Y;
+ 	public boolean isEaten(int by) {
+ 		return y >= by;
  	}
  };
 
