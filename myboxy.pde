@@ -167,7 +167,7 @@ class Keyboard {
 interface State {
 	public void draw();
 	public void click(int x, int y);
-	public void initializeButtons();
+	public void initializeItems();
 	public void drag(int x, int y);
 }
 
@@ -183,7 +183,7 @@ class TitleState implements State {
 		buttons = new Button[4];
 	}
 
-	public void initializeButtons() {
+	public void initializeItems() {
 		buttons[0] = new MenuButton("New Game", width/2, 150, 300, 50, this.g.getNewGameState());
 		buttons[1] = new MenuButton("Load Game", width/2, 250, 300, 50, this.g.getInGameState());
 		buttons[2] = new MenuButton("How To Play", width/2, 350, 300, 50, this.g.getHowToPlayState());
@@ -262,7 +262,7 @@ class NewGameState implements State {
 		currentIndex = 0;
 	}
 
-	public void initializeButtons() {
+	public void initializeItems() {
 
 	}
 
@@ -357,12 +357,13 @@ class NewGameState implements State {
 class InGameState implements State {
 	private Game g;
 	private Boxy b;
+	private ArrayList<FoodPellet> foodPellets;
 
 	public InGameState(Game g) {
 		this.g = g;
 	}
 
-	public void initializeButtons() {
+	public void initializeItems() {
 		b = g.getBoxy();
 	}
 
@@ -396,7 +397,7 @@ class HowToPlayState implements State {
 		this.g = g;
 	}
 
-	public void initializeButtons() {
+	public void initializeItems() {
 
 	}
 
@@ -423,7 +424,7 @@ class SurveyState implements State {
 		this.g = g;
 	}
 
-	public void initializeButtons() {
+	public void initializeItems() {
 
 	}
 
@@ -462,11 +463,11 @@ class Game {
 		surveyState = new SurveyState(this);
 		boxy = new Boxy();
 
-		titleState.initializeButtons();
-		newGameState.initializeButtons();
-		inGameState.initializeButtons();
-		howToPlayState.initializeButtons();
-		surveyState.initializeButtons();
+		titleState.initializeItems();
+		newGameState.initializeItems();
+		inGameState.initializeItems();
+		howToPlayState.initializeItems();
+		surveyState.initializeItems();
 
 		state = titleState;
 	}
