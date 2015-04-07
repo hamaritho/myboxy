@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 /******************************************************************************
  * Helper Functions                                                           *
  ******************************************************************************/
@@ -358,9 +360,12 @@ class InGameState implements State {
 	private Game g;
 	private Boxy b;
 	private ArrayList<FoodPellet> foodPellets;
+	private Button feedButton;
 
 	public InGameState(Game g) {
 		this.g = g;
+		foodPellets = new ArrayList<FoodPellet>();
+		feedButton = new Button("Feed", width-100, height/2, 100, 50);
 	}
 
 	public void initializeItems() {
@@ -372,6 +377,20 @@ class InGameState implements State {
 		fill(0);
 		writeText(b.getName(), width/2, 45, 77.7);
 
+		feedButton.draw();
+
+		if(!foodPellets.isEmpty()) {
+			for (Iterator<FoodPellet> iterator = foodPellets.iterator(); iterator.hasNext();) {
+			    FoodPellet pellet = iterator.next();
+			    pellet.draw();
+			    if (pellet.isEaten()) {
+			    	b.feed();
+			        // Remove the current element from the iterator and the list.
+			        iterator.remove();
+			    }
+			}
+		}
+
 		b.draw();
 
 		fill(200);
@@ -380,6 +399,9 @@ class InGameState implements State {
 
 	public void click(int x, int y) {
 		b.click(x, y);
+		if (feedButton.clicked(x, y)) {
+			foodPellets.add(new FoodPellet(b.getX(), b.getY()-height/2));
+		}
 	}
 
 	public void drag(int x, int y) {
@@ -514,6 +536,40 @@ class Game {
 		return boxy;
 	}
 };
+
+/******************************************************************************
+ * FoodPellet                                                                 *
+ ******************************************************************************/
+ class FoodPellet {
+ 	private int x;
+ 	private int y;
+ 	private int length = 5;
+ 	private int deg = 0;
+
+ 	private final int MAX_Y = height;
+
+ 	public FoodPellet(int x, int y) {
+ 		this.x = x;
+ 		this.y = y;
+ 	}
+
+ 	public void draw() {
+ 		fill(139,69,19);
+ 		pushMatrix();
+ 		translate(x, y);
+ 		rotate(radians(deg));
+ 		rect(0, 0, length, length);
+ 		popMatrix();
+
+ 		y += 1;
+ 		deg += 1;
+ 		deg %= 360;
+ 	}
+
+ 	public boolean isEaten() {
+ 		return y == MAX_Y;
+ 	}
+ };
 
 /******************************************************************************
  * Boxy                                                                       *
