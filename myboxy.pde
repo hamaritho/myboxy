@@ -605,7 +605,7 @@ class Boxy {
 	private int slideOffset = 0;
 
 	public Boxy() {
-		responsiveness = int(random(MAX_RESPONSIVENESS));
+		responsiveness = int(random(1,MAX_RESPONSIVENESS));
 		closeness = int(random(MAX_CLOSENESS));
 		fullness = int(random(MAX_FULLNESS));
 		happiness = int(random(MAX_HAPPINESS));
@@ -613,10 +613,11 @@ class Boxy {
 		c = color(int(random(255)), int(random(255)), int(random(255)));
 		x = width/2;
 		y = MAX_Y;
+		println("Responsiveness: " + responsiveness);
 	}
 
 	public void draw() {
-		fill(c);
+		fill(c);		
 		rect(x, y, LENGTH, LENGTH);
 
 		if (frameCount % 420 == 0 && fullness > 0) {
@@ -625,10 +626,11 @@ class Boxy {
 
 		if (fullness < MAX_FULLNESS/4) {
 			happiness = 0;
-		}
-
-		if (fullness < MAX_FULLNESS/2 && happiness > MAX_HAPPINESS/2) {
+		} else if (fullness < MAX_FULLNESS/2 && happiness > MAX_HAPPINESS/2) {
 			happiness = MAX_HAPPINESS/2;
+		}
+		else if (fullness <MAX_FULLNESS/2) {
+			happiness -= 1;
 		}
 
 		if (happiness < MAX_HAPPINESS/2) {
@@ -640,29 +642,18 @@ class Boxy {
 		}
 
 		if (sadTime > 1000 && closeness > 0) {
-			println("Sad Time. Closeness: " + closeness);
 			sadTime = 0;
 			closeness -= 1;
+			println("Sad Time. Closeness: " + closeness);
 		}
 		if (happyTime > 1000 && closeness < MAX_CLOSENESS) {
-			println("Happy Time. Closeness: " + closeness);
 			happyTime = 0;
 			closeness += 1;
+			println("Happy Time. Closeness: " + closeness);
 		}
 
 		jumpHeight = MAX_Y - (responsiveness * closeness);
 		slideLength = responsiveness * closeness;
-
-		if (happiness > (MAX_HAPPINESS*2)/3) {
-			if (!isJumping && frameCount % 420 == 0) {
-				isJumping = true;
-			}
-		}
-		if (happiness < MAX_HAPPINESS/3 && frameCount % 120 == 0) {
-			if (!isSliding) {
-				isSliding = true;
-			}
-		}
 
 		if (isJumping) {
 			jump();
@@ -721,6 +712,9 @@ class Boxy {
 				happiness += 1;
 				dragTime = 0;
 				println("Petting. Happiness: " + happiness);
+				if (isJumping == false) {
+					isJumping = true;
+				}
 			}
 		}
 	}
@@ -731,8 +725,14 @@ class Boxy {
 			if (happiness < MAX_HAPPINESS) {
 				happiness += 1;
 			}
+			if (isJumping == false) {
+				isJumping = true;
+			}
 		} else if (happiness > 0) {
 			happiness -= 1;
+			if (isSliding == false) {
+				isSliding = true;
+			}
 		}
 	}
 
@@ -742,7 +742,7 @@ class Boxy {
 	}
 
 	public void jump() {
-		y += jumpDirection;
+		y += jumpDirection * 2;
 
 		if (y < jumpHeight) {
 			jumpDirection = 1;
@@ -766,7 +766,6 @@ class Boxy {
 			slideOffset = 1;
 		}
 		else if (slideOffset == 0) {
-			println("Stop sliding!");
 			isSliding = false;
 		}
 	}
@@ -777,6 +776,10 @@ class Boxy {
 
 	public int getY() {
 		return y;
+	}
+
+	public int getLength() {
+		return LENGTH;
 	}
 };
 
