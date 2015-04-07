@@ -324,7 +324,9 @@ class NewGameState implements State {
 			case 1:
 				char k = keyboard.click(x, y);
 				if (k == '.') {
-					currentIndex -= 1;
+					if (currentIndex > 0) {
+						currentIndex -= 1;
+					}
 					name[currentIndex] = '_';
 				}
 				else if (k != '_') {
@@ -382,8 +384,8 @@ class InGameState implements State {
 		if(!foodPellets.isEmpty()) {
 			for (Iterator<FoodPellet> iterator = foodPellets.iterator(); iterator.hasNext();) {
 			    FoodPellet pellet = iterator.next();
-			    pellet.draw();
-			    if (pellet.isEaten()) {
+			    pellet.draw(b.getX());
+			    if (pellet.isEaten(b.getY() - (b.getLength() / 2))) {
 			    	b.feed();
 			        // Remove the current element from the iterator and the list.
 			        iterator.remove();
