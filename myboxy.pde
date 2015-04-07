@@ -596,6 +596,16 @@ class Boxy {
 	private int sadTime = 0;
 	private int happyTime = 0;
 
+	private boolean isJumping = false;
+	private int jumpDirection = -1;
+
+	private boolean isSliding = false;
+	private int slideDirection = 1;
+
+	private int jumpHeight;
+	private int slideLength;
+	private int slideOffset = 0;
+
 	public Boxy() {
 		responsiveness = int(random(MAX_RESPONSIVENESS));
 		closeness = int(random(MAX_CLOSENESS));
@@ -611,7 +621,7 @@ class Boxy {
 		fill(c);
 		rect(x, y, LENGTH, LENGTH);
 
-		if (frameCount % 420 == 0) {
+		if (frameCount % 420 == 0 && fullness > 0) {
 			fullness -= 1;
 		}
 
@@ -619,25 +629,49 @@ class Boxy {
 			happiness = 0;
 		}
 
-		if (fullness < MAX_FULLNESS/2) {
+		if (fullness < MAX_FULLNESS/2 && happiness > MAX_HAPPINESS/2) {
 			happiness = MAX_HAPPINESS/2;
 		}
 
 		if (happiness < MAX_HAPPINESS/2) {
-			sadTime	+= 1;
+			sadTime += 1;
 		}
 
-		if (happiness > MAX_HAPPINESS/2) {
+		if (happiness >= MAX_HAPPINESS/2) {
 			happyTime += 1;
 		}
 
-		if (sadTime > 1000) {
+		if (sadTime > 1000 && closeness > 0) {
+			println("Sad Time. Closeness: " + closeness);
 			sadTime = 0;
 			closeness -= 1;
 		}
-		if (happyTime > 1000) {
+		if (happyTime > 1000 && closeness < MAX_CLOSENESS) {
+			println("Happy Time. Closeness: " + closeness);
 			happyTime = 0;
 			closeness += 1;
+		}
+
+		jumpHeight = MAX_Y - (responsiveness * closeness);
+		slideLength = responsiveness * closeness;
+
+		if (happiness > (MAX_HAPPINESS*2)/3) {
+			if (!isJumping && frameCount % 420 == 0) {
+				isJumping = true;
+			}
+		}
+		if (happiness < MAX_HAPPINESS/3 && frameCount % 120 == 0) {
+			if (!isSliding) {
+				isSliding = true;
+			}
+		}
+
+		if (isJumping) {
+			jump();
+		}
+
+		if (isSliding) {
+			slide();
 		}
 	}
 
@@ -670,7 +704,9 @@ class Boxy {
 
 		if (mx >= left && mx <= right && my >= top && my <= bottom && happiness > 0) {
 			happiness -= 1;
+			println("Poked Boxy. Happiness: " + happiness);
 		}
+		
 
 	}
 
@@ -683,9 +719,10 @@ class Boxy {
 		if (mx >= left && mx <= right && my >= top && my <= bottom && happiness < MAX_HAPPINESS) {
 			dragTime += 1;
 
-			if (dragTime > 500) {
+			if (dragTime > 50) {
 				happiness += 1;
 				dragTime = 0;
+				println("Petting. Happiness: " + happiness);
 			}
 		}
 	}
@@ -693,20 +730,55 @@ class Boxy {
 	public void feed() {
 		if (fullness < MAX_FULLNESS) {
 			fullness += 1;
+			if (happiness < MAX_HAPPINESS) {
+				happiness += 1;
+			}
+		} else if (happiness > 0) {
+			happiness -= 1;
 		}
-	}
-
-	public int getResponsiveness() {
-		return responsiveness;
-	}
-
-	public int getCloseness() {
-		return closeness;
 	}
 
 	public void setPosition(int x, int y) {
 		this.x = x;
 		this.y = y;
+	}
+
+	public void jump() {
+		y += jumpDirection;
+
+		if (y < jumpHeight) {
+			jumpDirection = 1;
+		}
+		else if (y > MAX_Y) {
+			jumpDirection = -1;
+			isJumping = false;
+		}
+	}
+
+	public void slide() {
+		x += slideDirection;
+		slideOffset += slideDirection;
+
+		if (slideOffset < -slideLength) {
+			slideDirection = 1;
+			slideOffset = -1;
+		}
+		else if (slideOffset > slideLength) {
+			slideDirection = -1;
+			slideOffset = 1;
+		}
+		else if (slideOffset == 0) {
+			println("Stop sliding!");
+			isSliding = false;
+		}
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
 	}
 };
 
