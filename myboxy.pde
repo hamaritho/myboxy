@@ -43,10 +43,10 @@ class Button {
 	}
 
 	public boolean clicked(int mx, int my) {
-		int left = x - (w/2);
-		int right = x + (w/2);
-		int top = y - (h/2);
-		int bottom = y + (h/2);
+		int left = x - (w / 2);
+		int right = x + (w / 2);
+		int top = y - (h / 2);
+		int bottom = y + (h / 2);
 
 		return (mx >= left) && (mx <= right) && (my >= top) && (my <= bottom);
 	}
@@ -186,10 +186,10 @@ class TitleState implements State {
 	}
 
 	public void initializeItems() {
-		buttons[0] = new MenuButton("New Game", width/2, 150, 300, 50, this.g.getNewGameState());
-		buttons[1] = new MenuButton("Load Game", width/2, 250, 300, 50, this.g.getInGameState());
-		buttons[2] = new MenuButton("How To Play", width/2, 350, 300, 50, this.g.getHowToPlayState());
-		buttons[3] = new MenuButton("Take Survey", width/2, 450, 300, 50, this.g.getSurveyState());
+		buttons[0] = new MenuButton("New Game", width / 2, 150, 300, 50, this.g.getNewGameState());
+		buttons[1] = new MenuButton("Load Game", width / 2, 250, 300, 50, this.g.getInGameState());
+		buttons[2] = new MenuButton("How To Play", width / 2, 350, 300, 50, this.g.getHowToPlayState());
+		buttons[3] = new MenuButton("Take Survey", width / 2, 450, 300, 50, this.g.getSurveyState());
 	}
 
 	public void draw() {
@@ -197,7 +197,7 @@ class TitleState implements State {
 		String t = "My Boxy";
 		fill(0);
 
-		writeText(t, width/2, 50, 77.7);
+		writeText(t, width / 2, 50, 77.7);
 
 		for(Button b : buttons) {
 			b.draw();
@@ -275,20 +275,20 @@ class NewGameState implements State {
 		{
 			case 0:
 				fill(0);
-				writeText("Choose a Color:", width/2, 50, 28.9);
+				writeText("Choose a Color:", width / 2, 50, 28.9);
 				
 				for (Button b : colors) {
 					b.draw();
 				}
 
 				fill(chosenColor);
-				rect(width/2, 400, 100, 100);
+				rect(width / 2, 400, 100, 100);
 
 				break;
 
 			case 1:
 				fill(0);
-				writeText("Name your Boxy:", width/2, 50, 28.9);
+				writeText("Name your Boxy:", width / 2, 50, 28.9);
 				keyboard.draw();
 
 				fill(0);
