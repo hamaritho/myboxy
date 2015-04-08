@@ -367,7 +367,7 @@ class InGameState implements State {
 	public InGameState(Game g) {
 		this.g = g;
 		foodPellets = new ArrayList<FoodPellet>();
-		feedButton = new Button("Feed", width-100, height/2, 100, 50);
+		feedButton = new Button("Feed", width-100, height / 2, 100, 50);
 	}
 
 	public void initializeItems() {
@@ -377,7 +377,7 @@ class InGameState implements State {
 	public void draw() {
 		background(255);
 		fill(0);
-		writeText(b.getName(), width/2, 45, 77.7);
+		writeText(b.getName(), width / 2, 45, 77.7);
 
 		feedButton.draw();
 
@@ -393,21 +393,45 @@ class InGameState implements State {
 			}
 		}
 
+		if (b.theMostHappy()) {
+			fill(255, 255, 0);
+			pushMatrix();
+			translate(b.getX(), b.getY());
+			rotate(frameCount / 40.0);
+			star(0, 0, 80, 100, 20); 
+			popMatrix();
+		}
+
 		b.draw();
 
 		fill(200);
-		rect(width/2, 575, width, 50);
+		rect(width / 2, 575, width, 50);
 	}
 
 	public void click(int x, int y) {
 		b.click(x, y);
 		if (feedButton.clicked(x, y)) {
-			foodPellets.add(new FoodPellet(b.getX(), b.getY()-height/2));
+			foodPellets.add(new FoodPellet(b.getX(), b.getY()-height / 2));
 		}
 	}
 
 	public void drag(int x, int y) {
 		b.drag(x, y);
+	}
+
+	public void star(float x, float y, float radius1, float radius2, int npoints) {
+	  float angle = TWO_PI / npoints;
+	  float halfAngle = angle/2.0;
+	  beginShape();
+	  for (float a = 0; a < TWO_PI; a += angle) {
+	    float sx = x + cos(a) * radius2;
+	    float sy = y + sin(a) * radius2;
+	    vertex(sx, sy);
+	    sx = x + cos(a+halfAngle) * radius1;
+	    sy = y + sin(a+halfAngle) * radius1;
+	    vertex(sx, sy);
+	  }
+	  endShape(CLOSE);
 	}
 };
 
