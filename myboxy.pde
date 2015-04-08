@@ -597,116 +597,196 @@ class Game {
  * Boxy                                                                       *
  ******************************************************************************/
 class Boxy {
-	private int responsiveness;
-	private int closeness;
-	private int fullness;
-	private int happiness;
-	private color c;
-	private String name;
-	private int x;
-	private int y;
 
+	//Interaction Values--------------------------------------------------------
+	private int responsiveness;
+	private final int MIN_RESPONSIVENESS = 1;
 	private final int MAX_RESPONSIVENESS = 10;
+
+	private int closeness;
+	private final int MIN_CLOSENESS = 1;
 	private final int MAX_CLOSENESS = 10;
+
+	private int fullness;
+	private final int MIN_FULLNESS = 0;
 	private final int MAX_FULLNESS = 100;
+
+	private int happiness;
+	private final int MIN_HAPPINESS = 0;
 	private final int MAX_HAPPINESS = 100;
+
+	private int reactionValue;
+
+	private int sadTime;
+	private int happyTime;
+
+	//Properties----------------------------------------------------------------
+	private String name;
+	private color c;
+
 	private final int LENGTH = 100;
+
+	private int x;
+	private final int MIN_X = LENGTH / 2;
 	private final int MAX_X = width-LENGTH;
+	
+	private int y;
+	private final int MIN_Y = LENGTH / 2;
 	private final int MAX_Y = height-LENGTH;
 
-	private int dragTime = 0;
-	private int sadTime = 0;
-	private int happyTime = 0;
+	//Animation-----------------------------------------------------------------
+	private int dragTime;
 
-	private boolean isJumping = false;
-	private int jumpDirection = -1;
-
-	private boolean isSliding = false;
-	private int slideDirection = 1;
-
+	private boolean isJumping;
+	private int jumpDirection;
 	private int jumpHeight;
-	private int slideLength;
-	private int slideOffset = 0;
 
+	private boolean isSliding;
+	private int slideDirection;
+	private int leftSlide;
+	private int rightSlide;
+
+	private boolean isBouncing;
+	private int bounceDirection;
+	private int bounceHeight;
+
+	private boolean isShaking;
+	private int shakeDirection;
+	private int leftShake;
+	private int rightShake;
+
+	private int hitSides;
+
+	private int sittingStill;
+
+	//Constructor---------------------------------------------------------------
 	public Boxy() {
-		responsiveness = int(random(1,MAX_RESPONSIVENESS));
-		closeness = int(random(MAX_CLOSENESS));
-		fullness = int(random(MAX_FULLNESS));
-		happiness = int(random(MAX_HAPPINESS));
+		//Interaction Values
+		responsiveness = int(random(MIN_RESPONSIVENESS,MAX_RESPONSIVENESS));
+		closeness = int(random(MIN_CLOSENESS, MAX_CLOSENESS));
+		fullness = int(random(MIN_FULLNESS, MAX_FULLNESS));
+		happiness = int(random(MIN_HAPPINESS, MAX_HAPPINESS));
+
+		reactionValue = responsiveness * closeness;
+		sadTime = 0;
+		happyTime = 0;
+
+		//Properties
 		name = "Boxy";
 		c = color(int(random(255)), int(random(255)), int(random(255)));
-		x = width/2;
+		x = width / 2;
 		y = MAX_Y;
-		println("Responsiveness: " + responsiveness);
+
+		//Animation
+		dragTime = 0;
+
+		isJumping = false;
+		jumpDirection = -(reactionValue / 10);
+		jumpHeight = MAX_Y - reactionValue;
+
+		isSliding = false;
+		slideDirection = -(reactionValue / 10);
+		leftSlide = (width / 2) - reactionValue;
+		rightSlide = (width / 2) + reactionValue;
+
+		isBouncing = false;
+		bounceDirection = -1;
+		bounceHeight = MAX_Y - 5;
+
+		isShaking = false;
+		shakeDirection = -1;
+		leftShake = (width / 2) - 5;
+		rightShake = (width / 2) + 5;
+
+		hitSides = 0;
+
+		sittingStill = 0;
 	}
 
+	//Draw----------------------------------------------------------------------
 	public void draw() {
 		fill(c);		
 		rect(x, y, LENGTH, LENGTH);
 
-		if (frameCount % 420 == 0 && fullness > 0) {
+		tick();
+		move();
+	}
+
+	//Move----------------------------------------------------------------------
+	public void move() {
+		jump();
+		slide();
+		bounce();
+		shake();
+	}
+
+	//Tick----------------------------------------------------------------------
+	public void tick() {
+		if (frameCount % 420 == 0 && fullness > MIN_FULLNESS) {
 			fullness -= 1;
 		}
 
-		if (fullness < MAX_FULLNESS/4) {
+		if (fullness < MAX_FULLNESS / 4) {
+
 			happiness = 0;
-		} else if (fullness < MAX_FULLNESS/2 && happiness > MAX_HAPPINESS/2) {
-			happiness = MAX_HAPPINESS/2;
+
+		} else if (fullness < MAX_FULLNESS / 2 && happiness > MAX_HAPPINESS / 2) {
+
+			happiness = MAX_HAPPINESS / 2;
+
 		}
-		else if (fullness <MAX_FULLNESS/2) {
+		else if (fullness < MAX_FULLNESS / 2 && happiness > MIN_HAPPINESS) {
+
 			happiness -= 1;
+
 		}
 
-		if (happiness < MAX_HAPPINESS/2) {
+		if (happiness < MAX_HAPPINESS / 2) {
+
 			sadTime += 1;
+
 		}
 
-		if (happiness >= MAX_HAPPINESS/2) {
+		if (happiness >= MAX_HAPPINESS / 2) {
+
 			happyTime += 1;
+
 		}
 
-		if (sadTime > 1000 && closeness > 0) {
+		if (sadTime > 1000 && closeness > MIN_CLOSENESS) {
+
 			sadTime = 0;
 			closeness -= 1;
-			println("Sad Time. Closeness: " + closeness);
+
 		}
 		if (happyTime > 1000 && closeness < MAX_CLOSENESS) {
+
 			happyTime = 0;
 			closeness += 1;
-			println("Happy Time. Closeness: " + closeness);
+
+		}
+		if (sittingStill > 500 && !isMoving() && happiness > MAX_HAPPINESS / 2) {
+
+			isBouncing = true;
+
+		}
+		if (sittingStill > 500 && !isMoving() && happiness < MAX_HAPPINESS / 2) {
+			isShaking = true;
 		}
 
-		jumpHeight = MAX_Y - (responsiveness * closeness);
-		slideLength = responsiveness * closeness;
-
-		if (isJumping) {
-			jump();
+		if (!isMoving()) {
+			sittingStill += 1;
+		} else {
+			sittingStill = 0;
 		}
 
-		if (isSliding) {
-			slide();
-		}
-	}
 
-	public color getColor() {
-		return c;
-	}
+		reactionValue = responsiveness * closeness;
+		jumpHeight = MAX_Y - reactionValue;
+		leftSlide = (width / 2) - reactionValue;
+		rightSlide = (width / 2) + reactionValue;
 
-	public void setColor(color c) {
-		this.c = c;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(char[] letters) {
-		name = "";
-		for (char letter : letters) {
-			if (letter != '_') {
-				name += letter;
-			}
-		}
+		println("Happiness: " + happiness);
 	}
 
 	public void click(int mx, int my) {
@@ -715,12 +795,15 @@ class Boxy {
 		int top = y - LENGTH;
 		int bottom = y + LENGTH;
 
-		if (mx >= left && mx <= right && my >= top && my <= bottom && happiness > 0) {
-			happiness -= 1;
-			println("Poked Boxy. Happiness: " + happiness);
+		if (mx >= left && mx <= right && my >= top && my <= bottom) {
+			if (happiness > MIN_HAPPINESS) {
+				happiness -= 1;
+			}
+			
+			if (!isMoving()) {
+				isSliding = true;
+			}
 		}
-		
-
 	}
 
 	public void drag(int mx, int my) {
@@ -735,8 +818,7 @@ class Boxy {
 			if (dragTime > 50) {
 				happiness += 1;
 				dragTime = 0;
-				println("Petting. Happiness: " + happiness);
-				if (isJumping == false) {
+				if (!isMoving()) {
 					isJumping = true;
 				}
 			}
@@ -749,52 +831,124 @@ class Boxy {
 			if (happiness < MAX_HAPPINESS) {
 				happiness += 1;
 			}
-			if (isJumping == false) {
+			if (!isMoving()) {
 				isJumping = true;
 			}
-		} else if (happiness > 0) {
-			happiness -= 1;
-			if (isSliding == false) {
+		} else {
+			if (happiness > MIN_HAPPINESS) {
+				happiness -= 1;
+			}
+			if (!isMoving()) {
 				isSliding = true;
 			}
 		}
 	}
 
-	public void setPosition(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
-
 	public void jump() {
-		y += jumpDirection * 2;
+		if (isJumping) {
+			y += jumpDirection;
 
-		if (y < jumpHeight) {
-			jumpDirection = 1;
-		}
-		else if (y > MAX_Y) {
-			jumpDirection = -1;
-			isJumping = false;
+			if (y < jumpHeight) {
+				jumpDirection *= -1;
+				y = jumpHeight;
+			}
+			else if (y > MAX_Y) {
+				jumpDirection *= -1;
+				y = MAX_Y;
+				isJumping = false;
+			}
 		}
 	}
 
 	public void slide() {
-		x += slideDirection;
-		slideOffset += slideDirection;
+		if (isSliding) {
 
-		if (slideOffset < -slideLength) {
-			slideDirection = 1;
-			slideOffset = -1;
-		}
-		else if (slideOffset > slideLength) {
-			slideDirection = -1;
-			slideOffset = 1;
-		}
-		else if (slideOffset == 0) {
-			isSliding = false;
+			x += slideDirection;
+
+			if (x < leftSlide) {
+				slideDirection *= -1;
+				x = leftSlide;
+				hitSides += 1;
+			} else if (x > rightSlide) {
+				slideDirection *= -1;
+				x = rightSlide;
+				hitSides += 1;
+			} else if (hitSides >= 2) {
+				if (abs(x - (width / 2)) <= 10) {
+					hitSides = 0;
+					isSliding = false;
+					x = width / 2;
+				}
+			}
 		}
 	}
 
-	public int getX() {
+	public void bounce() {
+		if (isBouncing) {
+			y += bounceDirection;
+
+			if (y < bounceHeight) {
+				bounceDirection *= -1;
+				y = bounceHeight;
+			} else if (y > MAX_Y) {
+				bounceDirection *= -1;
+				y = MAX_Y;
+				isBouncing = false;
+			}
+		}
+	}
+
+	public void shake() {
+		if (isShaking) {
+
+			x += shakeDirection;
+
+			if (x < leftShake) {
+				shakeDirection *= -1;
+				x = leftShake;
+				hitSides += 1;
+			} else if (x > rightShake) {
+				shakeDirection *= -1;
+				x = rightShake;
+				hitSides += 1;
+			} else if (hitSides >= 2) {
+				if (abs(x - (width / 2)) <= 10) {
+					hitSides = 0;
+					isShaking = false;
+					x = width / 2;
+				}
+			}
+		}
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(char[] letters) {
+		name = "";
+		for (char letter : letters) {
+
+			if (letter != '_') {
+				name += letter;
+			}
+
+		}
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public color getColor() {
+		return c;
+	}
+
+	public void setColor(color c) {
+		this.c = c;
+	}
+
+	 public int getX() {
 		return x;
 	}
 
@@ -802,8 +956,25 @@ class Boxy {
 		return y;
 	}
 
+	public void setPosition(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+
 	public int getLength() {
 		return LENGTH;
+	}
+
+	public boolean isMoving() {
+		return isJumping || isSliding || isBouncing || isShaking;
+	}
+
+	public boolean theMostHappy() {
+		return happiness == MAX_HAPPINESS;
+	}
+
+	public boolean theSaddest() {
+		return happiness == MIN_HAPPINESS;
 	}
 };
 
