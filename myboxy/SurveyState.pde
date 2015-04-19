@@ -13,7 +13,7 @@ class SurveyState implements State {
 	}
 
 	public void draw() {
-		link("http://goo.gl/forms/alnysL5lVp");
+		link("http://goo.gl/forms/ZhJ8HLMxw4");
 		g.setState(g.getTitleState());
 	}
 

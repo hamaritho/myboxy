@@ -32,6 +32,8 @@ class Boxy {
 
 	private final int DELTA = 1;
 
+	private boolean likesPetting;
+
 	//Properties----------------------------------------------------------------
 	private String name;
 	private color c;
@@ -75,6 +77,7 @@ class Boxy {
 		sadTime = 0;
 		happyTime = 0;
 
+		likesPetting = random(100) > 50;
 
 		//Properties
 		name = "Boxy";
@@ -115,6 +118,14 @@ class Boxy {
  	}
 
  	//Getters, Setters, and Modifiers
+ 	public boolean getLikesPetting() {
+ 		return likesPetting;
+ 	}
+
+ 	public void setLikesPetting(boolean likes) {
+ 		likesPetting = likes;
+ 	}
+
 	public String getName() {
 		return name;
 	}
@@ -341,21 +352,38 @@ class Boxy {
 		if (mx >= left && mx <= right && my >= top && my <= bottom) {
 			switch(event.getAction()) {
 				case MouseEvent.CLICK:
-					decreaseHappiness();
-					
-					if (currentState.isIdle()) {
-						currentState = slideState;
+					if (likesPetting) {
+						decreaseHappiness();
+						
+						if (currentState.isIdle()) {
+							currentState = slideState;
+						}
+					} else {
+						increaseHappiness();
+
+						if (currentState.isIdle()) {
+							currentState = jumpState;
+						}
 					}
 					break;
 				case MouseEvent.DRAG:
 					dragTime += DELTA;
 
 					if (dragTime > MAX_DRAGTIME) {
-						increaseHappiness();
+						if (likesPetting) {
+							increaseHappiness();
 
-						dragTime = 0;
-						if (currentState.isIdle()) {
-							currentState = jumpState;
+							dragTime = 0;
+							if (currentState.isIdle()) {
+								currentState = jumpState;
+							}
+						} else {
+							decreaseHappiness();
+
+							dragTime = 0;
+							if (currentState.isIdle()) {
+								currentState = slideState;
+							}
 						}
 					}
 					break;

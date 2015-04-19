@@ -43,7 +43,6 @@ void mouseDragged(MouseEvent event) {
 
 void keyPressed() {
 	if (key == ESC) {
-		println("Exiting");
 		exit();
 	}
 }

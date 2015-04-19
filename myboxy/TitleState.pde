@@ -66,6 +66,7 @@ class TitleState implements State {
 			int closeness = int(lines[3]);
 			int fullness = int(lines[4]);
 			int happiness = int(lines[5]);
+			boolean likes = boolean(lines[6]);
 
 			g.getBoxy().setName(name);
 			g.getBoxy().setColor(c);
@@ -73,6 +74,7 @@ class TitleState implements State {
 			g.getBoxy().setCloseness(closeness);
 			g.getBoxy().setFullness(fullness);
 			g.getBoxy().setHappiness(happiness);
+			g.getBoxy().setLikesPetting(likes);
 
 			return true;
 		}

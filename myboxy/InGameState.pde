@@ -84,6 +84,9 @@ class InGameState implements State {
 			save();
 			saved = true;
 		}
+		if (surveyButton.mouseEvent(event)) {
+			link("http://goo.gl/forms/ZhJ8HLMxw4");
+		}
 	}
 
 	public void star(float x, float y, float radius1, float radius2, int npoints) {
@@ -108,7 +111,8 @@ class InGameState implements State {
 			"" + b.getResponsiveness(),
 			"" + b.getCloseness(),
 			"" + b.getFullness(),
-			"" + b.getHappiness()
+			"" + b.getHappiness(),
+			"" + b.getLikesPetting()
 		};
 
 		saveStrings(dataFile("savegame.txt"), data);
