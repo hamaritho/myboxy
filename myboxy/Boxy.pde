@@ -65,6 +65,8 @@ class Boxy {
 	private BoxyState idleState;
 	private BoxyState currentState;
 
+	private boolean locked;
+
 	//Constructor---------------------------------------------------------------
 	public Boxy() {
 		//Interaction Values
@@ -81,7 +83,20 @@ class Boxy {
 
 		//Properties
 		name = "Boxy";
-		c = color(int(random(255)), int(random(255)), int(random(255)));
+		int r = int(random(100, 255));
+		int g = int(random(100, 255));
+		int b = int(random(100, 255));
+
+		if (abs(g-r) < 10) {
+			g += 100;
+			g %= 255;
+		}
+		if (abs(b-r) < 10) {
+			b -= 100;
+			b %= 255;
+		}
+
+		c = color(r, g, b);
 		x = width / 2;
 		y = MAX_Y;
 
@@ -96,6 +111,8 @@ class Boxy {
 		dragTime = 0;
 
 		stillTime = 0;
+
+		locked = false;
 	}
 
 	//Draw----------------------------------------------------------------------
@@ -342,6 +359,7 @@ class Boxy {
 	}
 
 	public void mouseEvent(MouseEvent event) {
+		locked = true;
 		int mx = event.getX();
 		int my = event.getY();
 		int left = x - (LENGTH / 2);
@@ -392,6 +410,7 @@ class Boxy {
 			}
 			zeroNoInteractionTime();
 		}
+		locked = false;
 	}
 
 	public void feed() {
@@ -417,9 +436,13 @@ class Boxy {
 			stillTime += DELTA;
 			if(stillTime > MAX_STILLTIME) {
 				if (happiness > MAX_HAPPINESS / 2) {
-					currentState = bounceState;
+					if (!locked) {
+						currentState = bounceState;
+					}
 				} else {
-					currentState = shakeState;
+					if (!locked) {
+						currentState = shakeState;
+					}	
 				}
 			}
 		} else {

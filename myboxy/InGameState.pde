@@ -18,6 +18,7 @@ class InGameState implements State {
 		feedButton = new Button("Feed", width-75, height / 2 + 100, 100, 50);
 		saveButton = new Button("Save", width-75, height/2 - 100 , 100, 50);
 		surveyButton = new Button("Take\nSurvey", width-75, height/2, 100, 100);
+
 		saved = false;
 		b = g.getBoxy();
 	}
